@@ -35,7 +35,7 @@ export function createProject(props) {
 
   function editTodo(props) {
     if (props.id !== undefined) {
-      todos[props.id].setProps(props);
+      todos.get(props.id).setProps(props);
     }
   }
 
