@@ -25,6 +25,7 @@
 
   --sidebar-width: 21rem;
   --main-width: min(42rem, 100%);
+  --full-width: calc(min(42rem, 100%) + 21rem);
 
   font-size: 16px;
   font-family: Roboto;
@@ -72,7 +73,7 @@ body {
 
 .header,
 .footer {
-  padding: 1rem calc(var(--main-width) * 0.5 + var(--spacing-unit));
+  padding: 1rem calc(var(--spacing-unit) + (100% - var(--full-width)) / 2);
 
   background-color: var(--primary-light);
   color: var(--primary-dark);
