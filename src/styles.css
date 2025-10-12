@@ -41,7 +41,7 @@ body {
   justify-content: center;
   align-items: center;
 
-  background-color: white;
+  background: center / cover no-repeat url("./public/jpg/bg.jpg");
 }
 
 .wrapper {
@@ -75,8 +75,8 @@ body {
 .footer {
   padding: 1rem calc(var(--spacing-unit) + (100% - var(--full-width)) / 2);
 
-  background-color: var(--primary-light);
-  color: var(--primary-dark);
+  background-color: var(--primary);
+  color: white;
 }
 
 .header {
@@ -106,6 +106,9 @@ body {
   display: flex;
 
   padding: var(--spacing-unit);
+  border-right: 1px solid var(--primary-dark);
+
+  background-color: var(--primary);
 }
 
 .projects-list {
@@ -128,7 +131,7 @@ body {
 
 .project-name {
   font-size: 1.1rem;
-  color: var(--primary-dark);
+  color: white;
 
   display: flex;
   justify-content: start;
@@ -141,6 +144,10 @@ body {
 .project-delete img {
   height: 1.8rem;
   width: 1.8rem;
+}
+
+.todos-container {
+  background-color: var(--primary-light);
 }
 
 .footer {
