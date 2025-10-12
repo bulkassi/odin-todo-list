@@ -23,6 +23,9 @@
   --secondary-light: #b2dfdb;
   */
 
+  --sidebar-width: 21rem;
+  --main-width: min(42rem, 100%);
+
   font-size: 16px;
   font-family: Roboto;
   --spacing-unit: 1rem;
@@ -47,7 +50,7 @@ body {
   display: grid;
   grid-template-columns:
     1fr
-    min(65rem, 100%)
+    calc(var(--main-width) + var(--sidebar-width))
     1fr;
   grid-template-rows:
     4rem
@@ -69,7 +72,7 @@ body {
 
 .header,
 .footer {
-  padding: 1rem calc((100% - min(65rem, 100%)) * 0.5 + var(--spacing-unit));
+  padding: 1rem calc(var(--main-width) * 0.5 + var(--spacing-unit));
 
   background-color: var(--primary-light);
   color: var(--primary-dark);
@@ -88,6 +91,11 @@ body {
 
 .main-content {
   grid-area: main;
+
+  display: grid;
+  grid-template-columns:
+    300px
+    1fr;
 
   border-left: 2px solid var(--primary-dark);
   border-right: 2px solid var(--primary-dark);
