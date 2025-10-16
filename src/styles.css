@@ -98,6 +98,9 @@ body {
     300px
     1fr;
 
+  height: 100%;
+  overflow: hidden;
+
   border-left: 2px solid var(--primary-dark);
   border-right: 2px solid var(--primary-dark);
 }
@@ -148,6 +151,92 @@ body {
 
 .todos-container {
   background-color: var(--primary-light);
+  /* Add these properties to make it fill the available height */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.todos-list {
+  display: grid;
+  overflow-y: auto;
+  grid-template-columns: 1fr;
+  grid-template-rows: 100px;
+  grid-auto-rows: 100px;
+  gap: 1rem;
+
+  padding: 1rem;
+  /* Add these properties to make it expand and fill the container */
+  flex: 1;
+  min-height: 0; /* Important for Firefox to allow shrinking below content size */
+}
+
+.todo-item {
+  display: grid;
+  grid-template-columns: 0.5rem 1fr 150px;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+    ". title date"
+    ". desc priority";
+
+  background: linear-gradient(to right, var(--primary) 0.5rem, white 0.5rem);
+  border-radius: 0.25rem;
+  box-shadow: 5px 5px 10px rgb(155, 155, 155);
+}
+
+.todo-title {
+  grid-area: title;
+  justify-self: start;
+  align-self: center;
+
+  font-size: 1.5rem;
+  color: var(--primary-dark);
+  padding: 0 1rem;
+}
+
+.todo-desc {
+  grid-area: desc;
+  justify-self: start;
+  align-self: start;
+
+  font-size: 0.8rem;
+  color: black;
+  padding: 0 1rem;
+}
+
+.todo-date {
+  grid-area: date;
+  justify-self: end;
+  align-self: center;
+
+  font-size: 1rem;
+  color: gray;
+  padding: 0 1rem;
+}
+
+.todo-priority {
+  grid-area: priority;
+  justify-self: end;
+  align-self: center;
+
+  font-size: 1rem;
+  color: white;
+  border-radius: 1rem;
+  padding: 0.25rem 1rem;
+  margin: 0 1rem;
+
+  &.high {
+    background-color: var(--primary-dark);
+  }
+
+  &.medium {
+    background-color: var(--primary);
+  }
+
+  &.low {
+    background-color: green;
+  }
 }
 
 .footer {
@@ -166,6 +255,8 @@ body {
 }
 
 h1,
+h2,
+p,
 ul,
 ol {
   padding: 0;
@@ -180,4 +271,8 @@ button {
   border: 0;
 
   background-color: inherit;
+}
+
+ul {
+  list-style: none;
 }
