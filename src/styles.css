@@ -97,6 +97,10 @@ body {
   grid-template-columns:
     300px
     1fr;
+  grid-template-rows: 5rem 1fr;
+  grid-template-areas:
+    "projects cur-project"
+    "projects todos";
 
   height: 100%;
   overflow: hidden;
@@ -105,6 +109,8 @@ body {
 }
 
 .projects-container {
+  grid-area: projects;
+
   display: flex;
 
   padding: var(--spacing-unit) var(--spacing-unit) 0 0;
@@ -157,7 +163,74 @@ body {
   width: 2rem;
 }
 
+.project-picked {
+  grid-area: cur-project;
+
+  display: grid;
+  grid-template-columns: 1fr 10rem;
+  grid-template-rows: 1.5rem 2rem 1fr;
+  grid-template-areas:
+    "cur-proj-header chg-name-btn"
+    "cur-proj-name chg-name-btn"
+    "cur-proj-name chg-name-btn";
+
+  background-color: var(--primary-dark);
+  border-right: 1px solid var(--primary-light);
+}
+
+.project-name-header {
+  grid-area: cur-proj-header;
+  display: flex;
+  align-items: center;
+
+  padding-left: 0.5rem;
+
+  color: white;
+}
+
+.project-picked-name {
+  grid-area: cur-proj-name;
+
+  padding-left: 0.5rem;
+
+  color: white;
+}
+
+.project-name-change {
+  grid-area: chg-name-btn;
+
+  align-self: center;
+
+  display: grid;
+  grid-template-columns: 1rem 1rem 1fr;
+  grid-template-areas: ". chg-name-btn-icon chg-name-btn-desc";
+  justify-content: center;
+  align-items: center;
+
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  background-color: var(--primary);
+  color: white;
+
+  height: 2rem;
+
+  & img {
+    grid-area: chg-name-btn-icon;
+
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+
+  & p {
+    grid-area: chg-name-btn-desc;
+
+    font-size: 1rem;
+  }
+}
+
 .todos-container {
+  grid-area: todos;
+
   background-color: var(--primary);
   border-right: 1px solid var(--primary-light);
 
@@ -294,6 +367,7 @@ body {
 
 h1,
 h2,
+h3,
 p,
 ul,
 ol {
