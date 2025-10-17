@@ -57,5 +57,36 @@
       </main>
       <footer class="footer full-bleed"></footer>
     </div>
+    <dialog id="todo-dialog">
+      <h2 class="todo-dialog-header">Изменение задачи</h2>
+      <form action="" method="dialog">
+        <div class="dialog-forms">
+          <label for="todo-title-input">
+            <p>Название задачи</p>
+            <input type="text" id="todo-title-input" required>
+          </label>
+          <label for="todo-desc-input">
+            <p>Описание</p>
+            <textarea name="" id="todo-desc-input" rows="3"></textarea>
+          </label>
+          <label for="todo-date-input">
+            <p>Дедлайн</p>
+            <input type="date" id="todo-date-input" required>
+          </label>
+          <label for="todo-priority-select">
+            <p>Приоритет</p>
+            <select name="todo-priority" id="todo-priority-select" required>
+              <option value="low">Низкий</option>
+              <option value="medium">Средний</option>
+              <option value="high">Высокий</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-actions">
+          <input id="todo-cancel-btn" type="submit" value="Отмена" formnovalidate >
+          <input id="todo-save-btn" type="submit" value="Сохранить" >
+        </div>
+      </form>
+    </dialog>
   </body>
 </html>

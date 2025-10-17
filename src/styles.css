@@ -44,6 +44,66 @@ body {
   background: center / cover no-repeat url("./public/jpg/bg.jpg");
 }
 
+#todo-dialog[open] {
+  display: grid;
+  grid-template-rows: 2rem 1fr;
+
+  background: linear-gradient(120deg, white 30%, var(--primary-light) 90%);
+  padding: 1rem;
+  height: 24rem;
+  width: 16rem;
+
+  & form {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+
+    margin-top: var(--spacing-unit);
+
+    & .dialog-forms {
+      display: flex;
+      flex-flow: column nowrap;
+      gap: 0.5rem;
+
+      & label {
+        display: flex;
+        flex-flow: column nowrap;
+
+        & p {
+          color: var(--primary-dark);
+        }
+      }
+    }
+  }
+
+  & .form-actions {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: end;
+    gap: 0.5rem;
+
+    & input {
+      font-size: 1rem;
+
+      padding: 4px 8px;
+
+      border-radius: 4px;
+
+      &#todo-cancel-btn {
+        background-color: white;
+        border: 1px solid var(--primary-dark);
+        color: black;
+      }
+
+      &#todo-save-btn {
+        background-color: var(--primary-dark);
+        border: 1px solid var(--primary-light);
+        color: white;
+      }
+    }
+  }
+}
+
 .wrapper {
   height: 100%;
   width: 100%;
@@ -387,4 +447,18 @@ button {
 
 ul {
   list-style: none;
+}
+
+dialog {
+  border-radius: 0.5rem;
+  border: 2px solid var(--primary-dark);
+}
+
+dialog::backdrop {
+  background-color: black;
+  opacity: 0.3;
+}
+
+textarea {
+  resize: none;
 }
