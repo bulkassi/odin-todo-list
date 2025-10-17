@@ -182,11 +182,11 @@ body {
 
 .todo-item {
   display: grid;
-  grid-template-columns: 0.5rem 1fr 150px;
+  grid-template-columns: 0.5rem 1fr 150px 50px;
   grid-template-rows: repeat(2, 1fr);
   grid-template-areas:
-    ". title date"
-    ". desc priority";
+    ". title date edit-todo"
+    ". desc priority delete-todo";
 
   background: linear-gradient(
     to right,
@@ -249,6 +249,32 @@ body {
   &.low {
     background-color: green;
   }
+}
+
+.todo-edit {
+  grid-area: edit-todo;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  align-self: center;
+}
+
+.todo-delete {
+  grid-area: delete-todo;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  align-self: center;
+}
+
+.todo-edit img,
+.todo-delete img {
+  height: 2rem;
+  width: 2rem;
 }
 
 .footer {
