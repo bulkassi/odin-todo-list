@@ -60,7 +60,7 @@
     <dialog id="todo-dialog">
       <h2 class="todo-dialog-header">Изменение задачи</h2>
       <form action="" method="dialog">
-        <div class="dialog-forms">
+        <div class="dialog-form">
           <label for="todo-title-input">
             <p>Название задачи</p>
             <input type="text" id="todo-title-input" required>
@@ -80,6 +80,21 @@
               <option value="medium">Средний</option>
               <option value="high">Высокий</option>
             </select>
+          </label>
+        </div>
+        <div class="form-actions">
+          <input id="todo-cancel-btn" type="submit" value="Отмена" formnovalidate >
+          <input id="todo-save-btn" type="submit" value="Сохранить" >
+        </div>
+      </form>
+    </dialog>
+    <dialog id="project-dialog">
+      <h2 class="project-dialog-header">Изменение имени проекта</h2>
+      <form action="" method="dialog">
+        <div class="dialog-form">
+          <label for="todo-title-input">
+            <p>Имя проекта</p>
+            <input type="text" id="todo-title-input" required>
           </label>
         </div>
         <div class="form-actions">
