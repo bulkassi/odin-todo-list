@@ -45,7 +45,8 @@ body {
 }
 
 #todo-dialog[open],
-#project-dialog[open] {
+#project-dialog[open],
+#delete-confirmation-dialog[open] {
   display: grid;
 
   background: linear-gradient(120deg, white 30%, var(--primary-light) 90%);
@@ -82,11 +83,20 @@ body {
 
     & input {
       font-size: 1rem;
-
       padding: 4px 8px;
-
       border-radius: 4px;
+    }
+  }
+}
 
+#todo-dialog[open] {
+  grid-template-rows: 2rem 1fr;
+
+  height: 24rem;
+  width: 16rem;
+
+  & .form-actions {
+    & input {
       &#todo-cancel-btn {
         background-color: white;
         border: 1px solid var(--primary-dark);
@@ -102,18 +112,59 @@ body {
   }
 }
 
-#todo-dialog[open] {
-  grid-template-rows: 2rem 1fr;
-
-  height: 24rem;
-  width: 16rem;
-}
-
 #project-dialog[open] {
   grid-template-rows: 4rem 1fr;
 
   height: 12rem;
   width: 16rem;
+
+  & .form-actions {
+    & input {
+      &#project-cancel-btn {
+        background-color: white;
+        border: 1px solid var(--primary-dark);
+        color: black;
+      }
+
+      &#project-save-btn {
+        background-color: var(--primary-dark);
+        border: 1px solid var(--primary-light);
+        color: white;
+      }
+    }
+  }
+}
+
+#delete-confirmation-dialog[open] {
+  grid-template-rows: 2rem 1fr;
+  gap: 1rem;
+
+  height: 5rem;
+  width: 16rem;
+
+  & .delete-confirmation-dialog-header {
+    color: var(--primary-dark);
+  }
+
+  & form {
+    margin-top: 0;
+  }
+
+  & .form-actions {
+    & input {
+      &#confirmation-no-btn {
+        background-color: white;
+        border: 1px solid var(--primary-dark);
+        color: black;
+      }
+
+      &#confirmation-yes-btn {
+        background-color: var(--primary-dark);
+        border: 1px solid var(--primary-light);
+        color: white;
+      }
+    }
+  }
 }
 
 .wrapper {

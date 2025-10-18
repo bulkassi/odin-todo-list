@@ -92,14 +92,23 @@
       <h2 class="project-dialog-header">Изменение имени проекта</h2>
       <form action="" method="dialog">
         <div class="dialog-form">
-          <label for="todo-title-input">
+          <label for="project-title-input">
             <p>Имя проекта</p>
-            <input type="text" id="todo-title-input" required>
+            <input type="text" id="project-title-input" required>
           </label>
         </div>
         <div class="form-actions">
-          <input id="todo-cancel-btn" type="submit" value="Отмена" formnovalidate >
-          <input id="todo-save-btn" type="submit" value="Сохранить" >
+          <input id="project-cancel-btn" type="submit" value="Отмена" formnovalidate >
+          <input id="project-save-btn" type="submit" value="Сохранить" >
+        </div>
+      </form>
+    </dialog>
+    <dialog id="delete-confirmation-dialog">
+      <p class="delete-confirmation-dialog-header">Вы уверены, что хотите удалить объект?</p>
+      <form action="" method="dialog">
+        <div class="form-actions">
+          <input id="confirmation-no-btn" type="submit" value="Нет" formnovalidate >
+          <input id="confirmation-yes-btn" type="submit" value="Да" >
         </div>
       </form>
     </dialog>
