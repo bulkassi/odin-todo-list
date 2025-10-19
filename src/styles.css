@@ -234,12 +234,52 @@ body {
 .projects-container {
   grid-area: projects;
 
-  display: flex;
+  display: grid;
+  grid-template-rows: 3rem 1fr;
   overflow: hidden;
 
   border-right: 1px solid var(--primary);
 
   background-color: var(--primary-dark);
+}
+
+.projects-container-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+
+  border-bottom: 1px solid var(--primary);
+
+  & .project-add {
+    align-self: center;
+
+    display: grid;
+    grid-template-columns: 1rem 1rem 1fr;
+    grid-template-areas: ". chg-name-btn-icon chg-name-btn-desc";
+    justify-content: center;
+    align-items: center;
+
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    background-color: var(--primary);
+    color: white;
+
+    height: 2rem;
+    width: 14rem;
+
+    & img {
+      grid-area: chg-name-btn-icon;
+
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+
+    & p {
+      grid-area: chg-name-btn-desc;
+
+      font-size: 1rem;
+    }
+  }
 }
 
 .projects-list {
