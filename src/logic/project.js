@@ -13,19 +13,13 @@ export function createProject(props) {
     return {
       id,
       title,
-      todos: Array.from(todos.values()).map((todo) => todo.getProps()),
+      todos: Array.from(todos.values()),
     };
   }
 
   function setProps(props) {
     if (props.title !== undefined) {
       title = props.title;
-    }
-    if (props.todos !== undefined) {
-      todos.clear();
-      for (let todo of props.todos) {
-        addTodo(todo);
-      }
     }
   }
 
