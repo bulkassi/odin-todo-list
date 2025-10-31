@@ -1,8 +1,7 @@
 import { createTodo } from "./todo";
 import { createProject } from "./project";
-import { localStorageHandler } from "./localStorageHandler";
 
-export const projectsHandler = (function (storageHandler) {
+const createProjectsHandler = function (storageHandler) {
   let projects = new Map();
 
   function getProject(id) {
@@ -95,4 +94,6 @@ export const projectsHandler = (function (storageHandler) {
     editTodoInProject,
     removeTodoFromProject,
   };
-})(localStorageHandler);
+};
+
+export { projectsHandler };
