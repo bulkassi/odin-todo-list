@@ -1,31 +1,105 @@
 import { createPubSub } from "./pubSub";
+import { createProjectDialogController } from "./dialog/projectDialogController";
+import { createTodoDialogController } from "./dialog/todoDialogController";
+import { createDeleteDialogController } from "./dialog/deleteDialogController";
+import { UI_EVENTS, EVENTS } from "./screenEvents";
 
 const initializeScreenController = function (doc) {
   const pub = createPubSub();
+  const dom = createDomRefs(doc);
+  const state = createInitialState(dom);
 
-  const projectDialog = doc.querySelector("#project-dialog");
-  const projectTitleInput = doc.querySelector("#project-title-input");
-  const projectAddButton = doc.querySelector(".project-add");
-  const projectNameChangeButton = doc.querySelector(".project-name-change");
-  const projectPickedName = doc.querySelector(".project-picked-name");
-  const projectsList = doc.querySelector(".projects-list");
-  const todosList = doc.querySelector(".todos-list");
-  const todoAddButton = doc.querySelector(".todo-add");
-  const todoDialog = doc.querySelector("#todo-dialog");
-  const todoTitleInput = doc.querySelector("#todo-title-input");
-  const todoDescInput = doc.querySelector("#todo-desc-input");
-  const todoDateInput = doc.querySelector("#todo-date-input");
-  const todoPrioritySelect = doc.querySelector("#todo-priority-select");
+  const getCurrentProject = () => ({
+    id: state.currentProjectId,
+    name: state.currentProjectName,
+  });
 
-  const deleteConfirmationDialog = doc.querySelector(
-    "#delete-confirmation-dialog"
+  const setCurrentProject = ({ id = null, name = "" } = {}) => {
+    state.currentProjectId = id;
+    state.currentProjectName = name;
+
+    if (dom.projectPickedName && typeof name === "string") {
+      dom.projectPickedName.textContent = name;
+
+      if (id) {
+        dom.projectPickedName.dataset.projectId = id;
+      } else {
+        delete dom.projectPickedName.dataset.projectId;
+      }
+    }
+  };
+
+  const syncCurrentProjectFromDom = () => {
+    const name = dom.projectPickedName?.textContent ?? "";
+    state.currentProjectName = name.trim();
+    state.currentProjectId = dom.projectPickedName?.dataset?.projectId || null;
+    return getCurrentProject();
+  };
+
+  const projectDialog = createProjectDialogController(
+    dom,
+    state,
+    pub,
+    getCurrentProject
   );
-  const deleteConfirmationYesBtn = doc.querySelector("#confirmation-yes-btn");
-  const deleteConfirmationNoBtn = doc.querySelector("#confirmation-no-btn");
+  const todoDialog = createTodoDialogController(
+    dom,
+    state,
+    pub,
+    getCurrentProject
+  );
+  const deleteDialog = createDeleteDialogController(dom, state, pub);
 
-  const state = {
-    currentProjectId: projectPickedName?.dataset.projectId || null,
-    currentProjectName: projectPickedName?.textContent.trim() || "",
+  createProjectsUIController(
+    dom,
+    projectDialog,
+    deleteDialog,
+    syncCurrentProjectFromDom
+  );
+  createTodosUIController(dom, todoDialog, deleteDialog);
+
+  return {
+    events: EVENTS,
+    uiEvents: UI_EVENTS,
+    subscribe: pub.subscribe,
+    publish: pub.publish,
+    unsubscribe: pub.unsubscribe,
+    unsubscribeAll: pub.unsubscribeAll,
+    getCurrentProject,
+    setCurrentProject,
+    openProjectDialog: projectDialog.open,
+    openTodoDialog: todoDialog.open,
+    openDeleteConfirmationDialog: deleteDialog.open,
+  };
+};
+
+function createDomRefs(doc) {
+  return {
+    projectDialog: doc.querySelector("#project-dialog"),
+    projectTitleInput: doc.querySelector("#project-title-input"),
+    projectAddButton: doc.querySelector(".project-add"),
+    projectNameChangeButton: doc.querySelector(".project-name-change"),
+    projectPickedName: doc.querySelector(".project-picked-name"),
+    projectsList: doc.querySelector(".projects-list"),
+    todosList: doc.querySelector(".todos-list"),
+    todoDialog: doc.querySelector("#todo-dialog"),
+    todoTitleInput: doc.querySelector("#todo-title-input"),
+    todoDescInput: doc.querySelector("#todo-desc-input"),
+    todoDateInput: doc.querySelector("#todo-date-input"),
+    todoPrioritySelect: doc.querySelector("#todo-priority-select"),
+    todoAddButton: doc.querySelector(".todo-add"),
+    deleteConfirmationDialog: doc.querySelector("#delete-confirmation-dialog"),
+    deleteConfirmationYesBtn: doc.querySelector("#confirmation-yes-btn"),
+    deleteConfirmationNoBtn: doc.querySelector("#confirmation-no-btn"),
+  };
+}
+
+function createInitialState(dom) {
+  const name = dom.projectPickedName?.textContent ?? "";
+
+  return {
+    currentProjectId: dom.projectPickedName?.dataset?.projectId || null,
+    currentProjectName: name.trim(),
     pendingDeletion: {
       entityType: null,
       entityId: null,
@@ -42,180 +116,105 @@ const initializeScreenController = function (doc) {
       },
     },
   };
+}
 
-  function getCurrentProject() {
-    return { ...state };
-  }
-
-  function setCurrentProject({ id = null, name = "" } = {}) {
-    state.currentProjectId = id;
-    state.currentProjectName = name;
-
-    if (projectPickedName && typeof name === "string") {
-      projectPickedName.textContent = name;
-      if (id) {
-        projectPickedName.dataset.projectId = id;
-      } else {
-        delete projectPickedName.dataset.projectId;
-      }
-    }
-  }
-
-  function openProjectDialog({ initialValue = "", mode }) {
-    if (!projectDialog || !projectTitleInput) {
-      return;
-    }
-
-    projectTitleInput.value = initialValue;
-    if (typeof projectDialog.showModal === "function") {
-      projectDialog.showModal();
-    }
-
-    projectTitleInput.focus();
-
-    if (typeof projectTitleInput.select === "function") {
-      if (mode === "rename") {
-        projectTitleInput.select();
-      } else if (typeof projectTitleInput.setSelectionRange === "function") {
-        projectTitleInput.setSelectionRange(0, 0);
-      }
-    }
-
-    pub.publish("ui:project-dialog-opened", {
-      mode,
-      currentProject: getCurrentProject(),
+function attachListeners(configs) {
+  configs
+    .filter(({ element, handler }) => element && typeof handler === "function")
+    .forEach(({ element, type, handler }) => {
+      element.addEventListener(type, handler);
     });
-  }
+}
 
-  function openDeleteConfirmationDialog({
-    entityType,
-    entityId = null,
-    entityLabel = "",
-  }) {
-    if (!deleteConfirmationDialog) {
-      return;
-    }
-
-    state.pendingDeletion = {
-      entityType,
-      entityId,
-      entityLabel,
-    };
-
-    if (typeof deleteConfirmationDialog.showModal === "function") {
-      deleteConfirmationDialog.showModal();
-    }
-
-    if (deleteConfirmationYesBtn) {
-      deleteConfirmationYesBtn.focus();
-    }
-
-    pub.publish("ui:delete-dialog-opened", {
-      ...state.pendingDeletion,
-    });
-  }
-
-  function openTodoDialog({ mode, todoId = null, fields = {} }) {
-    if (!todoDialog) {
-      return;
-    }
-
-    state.pendingTodo = {
-      mode,
-      todoId,
+function readTodoData(listItem) {
+  if (!listItem) {
+    return {
+      todoId: null,
       fields: {
-        title: fields.title || "",
-        description: fields.description || "",
-        dueDate: fields.dueDate || "",
-        priority: fields.priority || "low",
+        title: "",
+        description: "",
+        dueDate: "",
+        priority: "low",
       },
     };
-
-    if (todoTitleInput) {
-      todoTitleInput.value = state.pendingTodo.fields.title;
-    }
-
-    if (todoDescInput) {
-      todoDescInput.value = state.pendingTodo.fields.description;
-    }
-
-    if (todoDateInput) {
-      todoDateInput.value = state.pendingTodo.fields.dueDate;
-    }
-
-    if (todoPrioritySelect) {
-      todoPrioritySelect.value = state.pendingTodo.fields.priority;
-    }
-
-    if (typeof todoDialog.showModal === "function") {
-      todoDialog.showModal();
-    }
-
-    if (todoTitleInput) {
-      todoTitleInput.focus();
-      if (typeof todoTitleInput.select === "function") {
-        if (mode === "edit") {
-          todoTitleInput.select();
-        } else if (typeof todoTitleInput.setSelectionRange === "function") {
-          todoTitleInput.setSelectionRange(0, 0);
-        }
-      }
-    }
-
-    pub.publish("ui:todo-dialog-opened", {
-      ...state.pendingTodo,
-      currentProject: getCurrentProject(),
-    });
   }
 
-  projectAddButton?.addEventListener("click", () => {
-    openProjectDialog({ initialValue: "", mode: "create" });
-  });
+  const priorityFromDataset = listItem.dataset?.todoPriority;
+  const priorityFromBadge =
+    listItem.querySelector?.(".todo-priority")?.dataset?.priority;
 
-  projectNameChangeButton?.addEventListener("click", () => {
-    const name =
-      projectPickedName?.textContent.trim() || state.currentProjectName || "";
+  return {
+    todoId: listItem.dataset?.todoId || null,
+    fields: {
+      title:
+        listItem.querySelector?.(".todo-title")?.textContent?.trim?.() || "",
+      description:
+        listItem.querySelector?.(".todo-desc")?.textContent?.trim?.() || "",
+      dueDate: listItem.dataset?.todoDueDate || "",
+      priority: priorityFromDataset || priorityFromBadge || "low",
+    },
+  };
+}
 
-    state.currentProjectName = name;
+function createProjectsUIController(
+  dom,
+  projectDialog,
+  deleteDialog,
+  syncCurrentProjectFromDom
+) {
+  attachListeners([
+    {
+      element: dom.projectAddButton,
+      type: "click",
+      handler: projectDialog.openCreate,
+    },
+    {
+      element: dom.projectNameChangeButton,
+      type: "click",
+      handler: () => {
+        syncCurrentProjectFromDom();
+        projectDialog.openRename();
+      },
+    },
+  ]);
 
-    if (projectPickedName?.dataset.projectId) {
-      state.currentProjectId = projectPickedName.dataset.projectId;
-    }
-
-    openProjectDialog({ initialValue: name, mode: "rename" });
-  });
-
-  todoAddButton?.addEventListener("click", () => {
-    openTodoDialog({ mode: "create" });
-  });
-
-  projectsList?.addEventListener("click", (event) => {
+  dom.projectsList?.addEventListener("click", (event) => {
     const deleteButton = event.target.closest?.(".project-delete");
     if (!deleteButton) {
       return;
     }
 
     const listItem = deleteButton.closest(".project-item");
-    const entityId = listItem?.dataset.projectId || null;
+    const entityId = listItem?.dataset?.projectId || null;
     const entityLabel =
-      listItem?.querySelector(".project-name")?.textContent.trim() || "";
+      listItem?.querySelector?.(".project-name")?.textContent?.trim?.() || "";
 
-    openDeleteConfirmationDialog({
+    deleteDialog.open({
       entityType: "project",
       entityId,
       entityLabel,
     });
   });
+}
 
-  todosList?.addEventListener("click", (event) => {
+function createTodosUIController(dom, todoDialog, deleteDialog) {
+  attachListeners([
+    {
+      element: dom.todoAddButton,
+      type: "click",
+      handler: () => todoDialog.open({ mode: "create" }),
+    },
+  ]);
+
+  dom.todosList?.addEventListener("click", (event) => {
     const deleteButton = event.target.closest?.(".todo-delete");
     if (deleteButton) {
       const listItem = deleteButton.closest(".todo-item");
-      const entityId = listItem?.dataset.todoId || null;
+      const entityId = listItem?.dataset?.todoId || null;
       const entityLabel =
-        listItem?.querySelector(".todo-title")?.textContent.trim() || "";
+        listItem?.querySelector?.(".todo-title")?.textContent?.trim?.() || "";
 
-      openDeleteConfirmationDialog({
+      deleteDialog.open({
         entityType: "todo",
         entityId,
         entityLabel,
@@ -230,35 +229,14 @@ const initializeScreenController = function (doc) {
     }
 
     const listItem = editButton.closest(".todo-item");
-    const todoId = listItem?.dataset.todoId || null;
+    const { todoId, fields } = readTodoData(listItem);
 
-    const todoPriorityDataset =
-      listItem?.querySelector(".todo-priority")?.dataset.priority;
-
-    openTodoDialog({
+    todoDialog.open({
       mode: "edit",
       todoId,
-      fields: {
-        title: listItem?.querySelector(".todo-title")?.textContent.trim() || "",
-        description:
-          listItem?.querySelector(".todo-desc")?.textContent.trim() || "",
-        dueDate: listItem?.dataset.todoDueDate || "",
-        priority:
-          listItem?.dataset.todoPriority || todoPriorityDataset || "low",
-      },
+      fields,
     });
   });
-
-  return {
-    subscribe: pub.subscribe,
-    publish: pub.publish,
-    unsubscribe: pub.unsubscribe,
-    unsubscribeAll: pub.unsubscribeAll,
-    getCurrentProject,
-    setCurrentProject,
-    openDeleteConfirmationDialog,
-    openTodoDialog,
-  };
-};
+}
 
 export { initializeScreenController };
