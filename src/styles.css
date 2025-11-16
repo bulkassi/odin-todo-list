@@ -28,14 +28,26 @@
   --full-width: calc(min(42rem, 100%) + 21rem);
 
   font-size: 16px;
-  font-family: Roboto;
+  font-family: "Roboto", sans-serif;
   --spacing-unit: 1rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
 }
 
 body {
   padding: 0;
   margin: 0;
   height: 100vh;
+  line-height: 1.5;
+  font-family: "Roboto", sans-serif;
 
   display: flex;
   justify-content: center;
@@ -48,123 +60,105 @@ body {
 #project-dialog[open],
 #delete-confirmation-dialog[open] {
   display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  background: linear-gradient(120deg, #ffffff 30%, var(--primary-light) 90%);
+  padding: 1.25rem;
+}
 
-  background: linear-gradient(120deg, white 30%, var(--primary-light) 90%);
-  padding: 1rem;
+#todo-dialog[open] form,
+#project-dialog[open] form,
+#delete-confirmation-dialog[open] form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-unit);
+  margin-top: 0;
+}
 
-  & form {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-between;
+#todo-dialog[open] .dialog-form,
+#project-dialog[open] .dialog-form,
+#delete-confirmation-dialog[open] .dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
 
-    margin-top: var(--spacing-unit);
+#todo-dialog[open] .dialog-form label,
+#project-dialog[open] .dialog-form label,
+#delete-confirmation-dialog[open] .dialog-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 
-    & .dialog-form {
-      display: flex;
-      flex-flow: column nowrap;
-      gap: 0.5rem;
+#todo-dialog[open] .dialog-form label p,
+#project-dialog[open] .dialog-form label p,
+#delete-confirmation-dialog[open] .dialog-form label p {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
 
-      & label {
-        display: flex;
-        flex-flow: column nowrap;
+#todo-dialog[open] .form-actions,
+#project-dialog[open] .form-actions,
+#delete-confirmation-dialog[open] .form-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
 
-        & p {
-          color: var(--primary-dark);
-        }
-      }
-    }
-  }
-
-  & .form-actions {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: end;
-    gap: 0.5rem;
-
-    & input {
-      font-size: 1rem;
-      padding: 4px 8px;
-      border-radius: 4px;
-    }
-  }
+#todo-dialog[open] .form-actions input,
+#project-dialog[open] .form-actions input,
+#delete-confirmation-dialog[open] .form-actions input {
+  font-size: 1rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  cursor: pointer;
 }
 
 #todo-dialog[open] {
-  grid-template-rows: 2rem 1fr;
-
-  height: 24rem;
-  width: 16rem;
-
-  & .form-actions {
-    & input {
-      &#todo-cancel-btn {
-        background-color: white;
-        border: 1px solid var(--primary-dark);
-        color: black;
-      }
-
-      &#todo-save-btn {
-        background-color: var(--primary-dark);
-        border: 1px solid var(--primary-light);
-        color: white;
-      }
-    }
-  }
+  grid-template-rows: auto 1fr;
+  width: 18rem;
+  max-width: 90vw;
+  max-height: 28rem;
 }
 
 #project-dialog[open] {
-  grid-template-rows: 4rem 1fr;
-
-  height: 12rem;
-  width: 16rem;
-
-  & .form-actions {
-    & input {
-      &#project-cancel-btn {
-        background-color: white;
-        border: 1px solid var(--primary-dark);
-        color: black;
-      }
-
-      &#project-save-btn {
-        background-color: var(--primary-dark);
-        border: 1px solid var(--primary-light);
-        color: white;
-      }
-    }
-  }
+  grid-template-rows: auto 1fr;
+  width: 18rem;
+  max-width: 90vw;
+  max-height: 16rem;
 }
 
 #delete-confirmation-dialog[open] {
-  grid-template-rows: 2rem 1fr;
-  gap: 1rem;
+  grid-template-rows: auto auto;
+  width: 18rem;
+  max-width: 90vw;
+  max-height: 12rem;
+  align-content: start;
+}
 
-  height: 5rem;
-  width: 16rem;
+#delete-confirmation-dialog[open] .delete-confirmation-dialog-header {
+  color: var(--primary-dark);
+  margin-bottom: 0.5rem;
+}
 
-  & .delete-confirmation-dialog-header {
-    color: var(--primary-dark);
-  }
+#project-cancel-btn,
+#todo-cancel-btn,
+#confirmation-no-btn {
+  background-color: #ffffff;
+  border: 1px solid var(--primary-dark);
+  color: #222;
+}
 
-  & form {
-    margin-top: 0;
-  }
-
-  & .form-actions {
-    & input {
-      &#confirmation-no-btn {
-        background-color: white;
-        border: 1px solid var(--primary-dark);
-        color: black;
-      }
-
-      &#confirmation-yes-btn {
-        background-color: var(--primary-dark);
-        border: 1px solid var(--primary-light);
-        color: white;
-      }
-    }
-  }
+#project-save-btn,
+#todo-save-btn,
+#confirmation-yes-btn {
+  background-color: var(--primary-dark);
+  border: 1px solid var(--primary-light);
+  color: #ffffff;
 }
 
 .wrapper {
@@ -218,7 +212,7 @@ body {
 
   display: grid;
   grid-template-columns:
-    300px
+    18.75rem
     1fr;
   grid-template-rows: 5rem 1fr;
   grid-template-areas:
@@ -249,37 +243,32 @@ body {
   justify-content: end;
 
   border-bottom: 1px solid var(--primary);
+}
 
-  & .project-add {
-    align-self: center;
+.projects-container-header .project-add {
+  align-self: center;
+  display: grid;
+  grid-template-columns: 1rem 1rem 1fr;
+  grid-template-areas: ". chg-name-btn-icon chg-name-btn-desc";
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  background-color: var(--primary);
+  color: #ffffff;
+  height: 2rem;
+  width: 14rem;
+}
 
-    display: grid;
-    grid-template-columns: 1rem 1rem 1fr;
-    grid-template-areas: ". chg-name-btn-icon chg-name-btn-desc";
-    justify-content: center;
-    align-items: center;
+.projects-container-header .project-add img {
+  grid-area: chg-name-btn-icon;
+  height: 1.5rem;
+  width: 1.5rem;
+}
 
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
-    background-color: var(--primary);
-    color: white;
-
-    height: 2rem;
-    width: 14rem;
-
-    & img {
-      grid-area: chg-name-btn-icon;
-
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-
-    & p {
-      grid-area: chg-name-btn-desc;
-
-      font-size: 1rem;
-    }
-  }
+.projects-container-header .project-add p {
+  grid-area: chg-name-btn-desc;
+  font-size: 1rem;
 }
 
 .projects-list {
@@ -291,6 +280,8 @@ body {
   overflow-y: auto;
 
   width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-dark) rgba(255, 255, 255, 0.25);
 }
 
 .project-item {
@@ -300,7 +291,7 @@ body {
 
   background-color: var(--primary);
   border-radius: 0 1rem 1rem 0;
-  width: 270px;
+  width: 16.875rem;
 }
 
 .project-name {
@@ -379,22 +370,22 @@ body {
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
   background-color: var(--primary);
-  color: white;
+  color: #ffffff;
 
   height: 2rem;
+}
 
-  & img {
-    grid-area: action-btn-icon;
+.project-name-change img,
+.todo-add img {
+  grid-area: action-btn-icon;
+  height: 1.5rem;
+  width: 1.5rem;
+}
 
-    height: 1.5rem;
-    width: 1.5rem;
-  }
-
-  & p {
-    grid-area: action-btn-desc;
-
-    font-size: 1rem;
-  }
+.project-name-change p,
+.todo-add p {
+  grid-area: action-btn-desc;
+  font-size: 1rem;
 }
 
 .todos-container {
@@ -413,18 +404,20 @@ body {
   display: grid;
   overflow-y: auto;
   grid-template-columns: 1fr;
-  grid-template-rows: 100px;
-  grid-auto-rows: 100px;
+  grid-template-rows: 6.25rem;
+  grid-auto-rows: 6.25rem;
   gap: 1rem;
 
   padding: 1rem;
   flex: 1;
   min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-dark) rgba(255, 255, 255, 0.25);
 }
 
 .todo-item {
   display: grid;
-  grid-template-columns: 0.5rem 1fr 150px 50px;
+  grid-template-columns: 0.5rem 1fr 9.375rem 3.125rem;
   grid-template-rows: repeat(2, 1fr);
   grid-template-areas:
     ". title date edit-todo"
@@ -436,7 +429,7 @@ body {
     white 0.5rem
   );
   border-radius: 0.25rem;
-  box-shadow: 5px 5px 10px rgb(155, 155, 155);
+  box-shadow: 0.3125rem 0.3125rem 0.625rem rgba(155, 155, 155, 1);
 }
 
 .todo-title {
@@ -479,18 +472,18 @@ body {
   border-radius: 1rem;
   padding: 0.25rem 1rem;
   margin: 0 1rem;
+}
 
-  &.high {
-    background-color: var(--primary-dark);
-  }
+.todo-priority.high {
+  background-color: var(--primary-dark);
+}
 
-  &.medium {
-    background-color: var(--primary);
-  }
+.todo-priority.medium {
+  background-color: var(--primary);
+}
 
-  &.low {
-    background-color: green;
-  }
+.todo-priority.low {
+  background-color: green;
 }
 
 .todo-edit {
