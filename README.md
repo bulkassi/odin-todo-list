@@ -1,3 +1,5 @@
 # odin-todo-list
 
 This project was created as part of The Odin Project curriculum. It involved developing a todo list web-application using HMTL/CSS/JS + Webpack for bundling the project (+ HMR during development). The main thing learnt from developing the project was the usage of local storage and interaction with it through JS API. For handling all operations on local storage for modidying information about projects and their todos a separate module `localStorageHandler.js` was created. Another point of interest is revisiting info about JS previously learnt during developments of [Tic-Tac-Toe game](https://github.com/bulkassi/odin-tic-tac-toe) and [Restaurant page](https://github.com/bulkassi/odin-restaurant-page) projects.
+
+Rudenya Artyom, 2025.
