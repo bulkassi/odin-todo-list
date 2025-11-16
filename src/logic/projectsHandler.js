@@ -96,4 +96,4 @@ const createProjectsHandler = function (storageHandler) {
   };
 };
 
-export { projectsHandler };
+export { createProjectsHandler };

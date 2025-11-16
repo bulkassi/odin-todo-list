@@ -81,4 +81,4 @@ const createLocalStorageHandler = function () {
   };
 };
 
-export { localStorageHandler };
+export { createLocalStorageHandler };

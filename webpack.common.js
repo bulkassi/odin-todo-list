@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
@@ -7,6 +8,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/template.html",
     }),
+    new webpack.ContextReplacementPlugin(/date-fns[\\/]/, /ru/),
   ],
   output: {
     filename: "main.js",
