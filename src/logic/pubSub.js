@@ -2,33 +2,36 @@ const createPubSub = function () {
   const events = new Map();
 
   function subscribe(event, callback) {
-    if (!events[event]) {
-      events[event] = [];
+    if (!events.has(event)) {
+      events.set(event, []);
     }
-    events[event].push(callback);
+    events.get(event).push(callback);
   }
 
   function publish(event, data) {
-    if (events[event]) {
-      events[event].forEach((callback) => {
+    if (events.has(event)) {
+      events.get(event).forEach((callback) => {
         callback(data);
       });
     }
   }
 
   function unsubscribe(event, callback) {
-    if (events[event]) {
-      events[event] = events[event].filter((cb) => cb !== callback);
+    if (events.has(event)) {
+      events.set(
+        event,
+        events.get(event).filter((cb) => cb !== callback)
+      );
     }
   }
 
   function unsubscribeAll(event) {
-    if (events[event]) {
-      events[event] = [];
+    if (events.has(event)) {
+      events.set(event, []);
     }
   }
 
   return { subscribe, publish, unsubscribe, unsubscribeAll };
 };
 
-export { PubSub };
+export { createPubSub };
