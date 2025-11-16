@@ -499,7 +499,7 @@ body {
 
 .todo-item {
   display: grid;
-  grid-template-columns: 1fr 9.375rem 3.125rem;
+  grid-template-columns: 1fr 12rem 3.125rem;
   grid-template-rows: repeat(2, 1fr);
   grid-template-areas:
     "title date edit-todo"

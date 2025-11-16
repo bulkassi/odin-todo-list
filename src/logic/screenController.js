@@ -1,3 +1,5 @@
+import { format as formatDateFns, parseISO, isValid as isValidDate } from "date-fns";
+import { ru as ruLocale } from "date-fns/locale";
 import { createLocalStorageHandler } from "./localStorageHandler";
 import { createProjectsHandler } from "./projectsHandler";
 import { createProject } from "./project";
@@ -512,13 +514,25 @@ function initializeScreenController(doc) {
       return "";
     }
 
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
+    let date;
+
+    if (value instanceof Date) {
+      date = value;
+    } else if (typeof value === "string") {
+      date = parseISO(value);
+      if (!isValidDate(date)) {
+        date = new Date(value);
+      }
+    } else {
+      date = new Date(value);
+    }
+
+    if (!isValidDate(date)) {
       return value;
     }
 
     try {
-      return date.toLocaleDateString("ru-RU");
+      return formatDateFns(date, "d MMMM yyyy", { locale: ruLocale });
     } catch (error) {
       return value;
     }
