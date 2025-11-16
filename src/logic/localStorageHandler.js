@@ -1,4 +1,4 @@
-const localStorageHandler = (function () {
+const createLocalStorageHandler = function () {
   const type = "localStorage";
 
   function isAvailable() {
@@ -79,6 +79,6 @@ const localStorageHandler = (function () {
     removeItem,
     clear,
   };
-})();
+};
 
 export { localStorageHandler };

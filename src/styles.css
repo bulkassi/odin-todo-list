@@ -330,12 +330,12 @@ body {
   grid-area: cur-project;
 
   display: grid;
-  grid-template-columns: 1fr 10rem;
-  grid-template-rows: 1.5rem 2rem 1fr;
+  grid-template-columns: 1fr 12rem;
+  grid-template-rows: 1.5rem auto 1fr;
   grid-template-areas:
-    "cur-proj-header chg-name-btn"
-    "cur-proj-name chg-name-btn"
-    "cur-proj-name chg-name-btn";
+    "cur-proj-header project-actions"
+    "cur-proj-name project-actions"
+    "cur-proj-name project-actions";
 
   background-color: var(--primary-dark);
   border-right: 1px solid var(--primary-light);
@@ -359,14 +359,20 @@ body {
   color: white;
 }
 
-.project-name-change {
-  grid-area: chg-name-btn;
-
+.project-actions {
+  grid-area: project-actions;
   align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+}
 
+.project-name-change,
+.todo-add {
   display: grid;
   grid-template-columns: 1rem 1rem 1fr;
-  grid-template-areas: ". chg-name-btn-icon chg-name-btn-desc";
+  grid-template-areas: ". action-btn-icon action-btn-desc";
   justify-content: center;
   align-items: center;
 
@@ -378,14 +384,14 @@ body {
   height: 2rem;
 
   & img {
-    grid-area: chg-name-btn-icon;
+    grid-area: action-btn-icon;
 
     height: 1.5rem;
     width: 1.5rem;
   }
 
   & p {
-    grid-area: chg-name-btn-desc;
+    grid-area: action-btn-desc;
 
     font-size: 1rem;
   }
