@@ -10,6 +10,12 @@ const initializeScreenController = function (doc) {
   const projectPickedName = doc.querySelector(".project-picked-name");
   const projectsList = doc.querySelector(".projects-list");
   const todosList = doc.querySelector(".todos-list");
+  const todoAddButton = doc.querySelector(".todo-add");
+  const todoDialog = doc.querySelector("#todo-dialog");
+  const todoTitleInput = doc.querySelector("#todo-title-input");
+  const todoDescInput = doc.querySelector("#todo-desc-input");
+  const todoDateInput = doc.querySelector("#todo-date-input");
+  const todoPrioritySelect = doc.querySelector("#todo-priority-select");
 
   const deleteConfirmationDialog = doc.querySelector(
     "#delete-confirmation-dialog"
@@ -24,6 +30,16 @@ const initializeScreenController = function (doc) {
       entityType: null,
       entityId: null,
       entityLabel: "",
+    },
+    pendingTodo: {
+      mode: null,
+      todoId: null,
+      fields: {
+        title: "",
+        description: "",
+        dueDate: "",
+        priority: "low",
+      },
     },
   };
 
@@ -99,6 +115,59 @@ const initializeScreenController = function (doc) {
     });
   }
 
+  function openTodoDialog({ mode, todoId = null, fields = {} }) {
+    if (!todoDialog) {
+      return;
+    }
+
+    state.pendingTodo = {
+      mode,
+      todoId,
+      fields: {
+        title: fields.title || "",
+        description: fields.description || "",
+        dueDate: fields.dueDate || "",
+        priority: fields.priority || "low",
+      },
+    };
+
+    if (todoTitleInput) {
+      todoTitleInput.value = state.pendingTodo.fields.title;
+    }
+
+    if (todoDescInput) {
+      todoDescInput.value = state.pendingTodo.fields.description;
+    }
+
+    if (todoDateInput) {
+      todoDateInput.value = state.pendingTodo.fields.dueDate;
+    }
+
+    if (todoPrioritySelect) {
+      todoPrioritySelect.value = state.pendingTodo.fields.priority;
+    }
+
+    if (typeof todoDialog.showModal === "function") {
+      todoDialog.showModal();
+    }
+
+    if (todoTitleInput) {
+      todoTitleInput.focus();
+      if (typeof todoTitleInput.select === "function") {
+        if (mode === "edit") {
+          todoTitleInput.select();
+        } else if (typeof todoTitleInput.setSelectionRange === "function") {
+          todoTitleInput.setSelectionRange(0, 0);
+        }
+      }
+    }
+
+    pub.publish("ui:todo-dialog-opened", {
+      ...state.pendingTodo,
+      currentProject: getCurrentProject(),
+    });
+  }
+
   projectAddButton?.addEventListener("click", () => {
     openProjectDialog({ initialValue: "", mode: "create" });
   });
@@ -114,6 +183,10 @@ const initializeScreenController = function (doc) {
     }
 
     openProjectDialog({ initialValue: name, mode: "rename" });
+  });
+
+  todoAddButton?.addEventListener("click", () => {
+    openTodoDialog({ mode: "create" });
   });
 
   projectsList?.addEventListener("click", (event) => {
@@ -136,19 +209,43 @@ const initializeScreenController = function (doc) {
 
   todosList?.addEventListener("click", (event) => {
     const deleteButton = event.target.closest?.(".todo-delete");
-    if (!deleteButton) {
+    if (deleteButton) {
+      const listItem = deleteButton.closest(".todo-item");
+      const entityId = listItem?.dataset.todoId || null;
+      const entityLabel =
+        listItem?.querySelector(".todo-title")?.textContent.trim() || "";
+
+      openDeleteConfirmationDialog({
+        entityType: "todo",
+        entityId,
+        entityLabel,
+      });
+
       return;
     }
 
-    const listItem = deleteButton.closest(".todo-item");
-    const entityId = listItem?.dataset.todoId || null;
-    const entityLabel =
-      listItem?.querySelector(".todo-title")?.textContent.trim() || "";
+    const editButton = event.target.closest?.(".todo-edit");
+    if (!editButton) {
+      return;
+    }
 
-    openDeleteConfirmationDialog({
-      entityType: "todo",
-      entityId,
-      entityLabel,
+    const listItem = editButton.closest(".todo-item");
+    const todoId = listItem?.dataset.todoId || null;
+
+    const todoPriorityDataset =
+      listItem?.querySelector(".todo-priority")?.dataset.priority;
+
+    openTodoDialog({
+      mode: "edit",
+      todoId,
+      fields: {
+        title: listItem?.querySelector(".todo-title")?.textContent.trim() || "",
+        description:
+          listItem?.querySelector(".todo-desc")?.textContent.trim() || "",
+        dueDate: listItem?.dataset.todoDueDate || "",
+        priority:
+          listItem?.dataset.todoPriority || todoPriorityDataset || "low",
+      },
     });
   });
 
@@ -160,6 +257,7 @@ const initializeScreenController = function (doc) {
     getCurrentProject,
     setCurrentProject,
     openDeleteConfirmationDialog,
+    openTodoDialog,
   };
 };
 
